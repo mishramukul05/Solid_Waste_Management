@@ -18,9 +18,9 @@ router.route('/')
     .post(protect, ...validateWasteRequest, handleValidationErrors, createRequest);
 
 // Route to update and delete specific requests by ID
-// Notice how these require BOTH protect AND managerOnly
+// Notice how update requires BOTH protect AND managerOnly, but delete requires only protect
 router.route('/:id')
     .put(protect, managerOnly, updateRequestStatus)
-    .delete(protect, managerOnly, deleteRequest);
+    .delete(protect, deleteRequest);
 
 module.exports = router;

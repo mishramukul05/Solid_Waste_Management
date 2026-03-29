@@ -72,13 +72,18 @@ const updateRequestStatus = async (req, res) => {
 
 // @desc    Delete a waste request
 // @route   DELETE /api/v1/requests/:id
-// @access  Private (Manager Only)
+// @access  Private (Citizen or Manager)
 const deleteRequest = async (req, res) => {
     try {
         const request = await WasteRequest.findById(req.params.id);
 
         if (!request) {
             return res.status(404).json({ success: false, message: 'Request not found' });
+        }
+
+        // Make sure user owns the request or is a manager
+        if (request.citizenId.toString() !== req.user.id && req.user.role !== 'manager') {
+            return res.status(403).json({ success: false, message: 'Not authorized to delete this request' });
         }
 
         await request.deleteOne();

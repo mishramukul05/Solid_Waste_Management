@@ -101,7 +101,7 @@ export default function Dashboard() {
     }
   };
 
-  // 5. Delete a Waste Request (Manager Only)
+  // 5. Delete a Waste Request (Citizen or Manager)
   const deleteRequest = async (id) => {
     if (!window.confirm("Are you sure you want to delete this request?")) return;
     
@@ -229,16 +229,14 @@ export default function Dashboard() {
                           </span>
                         )}
                         
-                        {/* Delete Button for Managers */}
-                        {userRole === 'manager' && (
-                          <button 
-                            onClick={() => deleteRequest(req._id)}
-                            className="bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 py-1 px-2 rounded ml-2 transition text-xs font-bold"
-                            title="Delete Request"
-                          >
-                            🗑️
-                          </button>
-                        )}
+                        {/* Delete Button for Managers and Citizens */}
+                        <button
+                          onClick={() => deleteRequest(req._id)}
+                          className="bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 py-1 px-2 rounded ml-2 transition text-xs font-bold"
+                          title="Delete Request"
+                        >
+                          🗑️
+                        </button>
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 mb-3">{req.description}</p>
