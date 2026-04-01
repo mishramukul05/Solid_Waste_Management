@@ -18,18 +18,33 @@ const requestSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    image: {
+        type: String, // We will store the base64 encoded image or URL here
+        required: true
+    },
     status: {
         type: String,
         enum: ['Pending', 'Dispatched', 'Resolved'],
-        default: 'Pending'
+        default: 'Pending',
+        index: true
+    },
+    resolvedImage: {
+        type: String // Optional: Store the base64 encoded clean image
     },
     citizenId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // This creates a relationship between the Request and the User
-        required: true
+        required: true,
+        index: true
+    },
+    dispatchedAt: {
+        type: Date
+    },
+    resolvedAt: {
+        type: Date
     }
-}, { 
-    timestamps: true 
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('WasteRequest', requestSchema);

@@ -42,4 +42,12 @@ const managerOnly = (req, res, next) => {
     }
 };
 
-module.exports = { protect, managerOnly };
+const managerOrWorker = (req, res, next) => {
+    if (req.user && (req.user.role === 'manager' || req.user.role === 'worker')) {
+        next();
+    } else {
+        res.status(403).json({ success: false, message: 'Access denied. Manager or Worker role required.' });
+    }
+};
+
+module.exports = { protect, managerOnly, managerOrWorker };
