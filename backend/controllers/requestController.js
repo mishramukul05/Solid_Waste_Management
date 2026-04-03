@@ -13,17 +13,19 @@ const createRequest = async (req, res) => {
         if (image) {
             // Predict if image is Clean or Dirty
             const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-            const tempDir = path.join(__dirname, '..', 'temp');
+            const os = require('os');
+            const tempDir = path.join(os.tmpdir(), 'waste_management_temp');
             if (!fs.existsSync(tempDir)) {
-                fs.mkdirSync(tempDir);
+                fs.mkdirSync(tempDir, { recursive: true });
             }
             const tempImagePath = path.join(tempDir, `temp_${Date.now()}.png`);
             fs.writeFileSync(tempImagePath, base64Data, { encoding: 'base64' });
 
             try {
                 // Call our local Python prediction server
-                const response = await axios.post('http://127.0.0.1:5001/predict', {
-                    image_path: tempImagePath
+                const mlServerUrl = process.env.ML_SERVER_URL || 'http://127.0.0.1:5001';
+                const response = await axios.post(`${mlServerUrl}/predict`, {
+                    image_base64: base64Data
                 });
                 
                 const finalOutput = response.data.prediction;
@@ -89,16 +91,18 @@ const verifyCleanImage = async (req, res) => {
         }
 
         const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-        const tempDir = path.join(__dirname, '..', 'temp');
+        const os = require('os');
+        const tempDir = path.join(os.tmpdir(), 'waste_management_temp');
         if (!fs.existsSync(tempDir)) {
-            fs.mkdirSync(tempDir);
+            fs.mkdirSync(tempDir, { recursive: true });
         }
         const tempImagePath = path.join(tempDir, `temp_worker_${Date.now()}.png`);
         fs.writeFileSync(tempImagePath, base64Data, { encoding: 'base64' });
 
         try {
-            const response = await axios.post('http://127.0.0.1:5001/predict', {
-                image_path: tempImagePath
+            const mlServerUrl = process.env.ML_SERVER_URL || 'http://127.0.0.1:5001';
+            const response = await axios.post(`${mlServerUrl}/predict`, {
+                image_base64: base64Data
             });
             const finalOutput = response.data.prediction;
 

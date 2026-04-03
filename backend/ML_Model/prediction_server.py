@@ -40,16 +40,23 @@ class PredictionHandler(BaseHTTPRequestHandler):
             try:
                 data = json.loads(post_data)
                 img_path = data.get('image_path')
+                img_base64 = data.get('image_base64')
                 
-                if not img_path or not os.path.exists(img_path):
+                if img_base64:
+                    import base64
+                    import io
+                    img_data = base64.b64decode(img_base64)
+                    img = Image.open(io.BytesIO(img_data)).convert("RGB")
+                elif img_path and os.path.exists(img_path):
+                    img = Image.open(img_path).convert("RGB")
+                else:
                     self.send_response(400)
                     self.send_header('Content-Type', 'application/json')
                     self.end_headers()
-                    self.wfile.write(json.dumps({"error": "Invalid image path"}).encode('utf-8'))
+                    self.wfile.write(json.dumps({"error": "Invalid image path or base64 data"}).encode('utf-8'))
                     return
                     
                 # Do the prediction
-                img = Image.open(img_path).convert("RGB")
                 img = transform(img).unsqueeze(0)
 
                 with torch.no_grad():
@@ -74,9 +81,11 @@ class PredictionHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
 def run_server(port=5001):
-    server_address = ('127.0.0.1', port)
+    # Bind to 0.0.0.0 for Render deployments or default testing
+    host = os.environ.get('HOST', '0.0.0.0')
+    server_address = (host, port)
     httpd = HTTPServer(server_address, PredictionHandler)
-    print(f"Prediction server running and listening on port {port}...", flush=True)
+    print(f"Prediction server running and listening on {host}:{port}...", flush=True)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
@@ -86,7 +95,8 @@ def run_server(port=5001):
 if __name__ == '__main__':
     # You can pass the port as a command line argument if needed
     import sys
-    port = 5001
+    # Read port from environment variable first, then from argument, default to 5001
+    port = int(os.environ.get('PORT', 5001))
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
     run_server(port)

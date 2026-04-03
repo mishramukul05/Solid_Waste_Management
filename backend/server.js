@@ -39,21 +39,31 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     
-    // Start the Python prediction microservice
-    console.log('Starting Python prediction server...');
-    const pythonScriptPath = path.join(__dirname, 'ML_Model', 'prediction_server.py');
-    const pythonServer = spawn('python', [pythonScriptPath, '5001']);
+    // Start the Python prediction microservice only if an external one isn't provided
+    if (!process.env.ML_SERVER_URL) {
+        console.log('Starting local Python prediction server...');
+        const pythonScriptPath = path.join(__dirname, 'ML_Model', 'prediction_server.py');
+        const pythonCmd = process.platform === "win32" ? "python" : "python3";
+        const pythonServer = spawn(pythonCmd, [pythonScriptPath, '5001']);
 
-    pythonServer.stdout.on('data', (data) => {
-        console.log(`[PyServer] ${data.toString().trim()}`);
-    });
-    
-    pythonServer.stderr.on('data', (data) => {
-        console.error(`[PyServer Error] ${data.toString().trim()}`);
-    });
+        pythonServer.stdout.on('data', (data) => {
+            console.log(`[PyServer] ${data.toString().trim()}`);
+        });
+        
+        pythonServer.stderr.on('data', (data) => {
+            console.error(`[PyServer Error] ${data.toString().trim()}`);
+        });
 
-    // Clean up the child process if the Node server shuts down
-    process.on('exit', () => pythonServer.kill());
-    process.on('SIGINT', () => { pythonServer.kill(); process.exit(); });
-    process.on('SIGTERM', () => { pythonServer.kill(); process.exit(); });
+        pythonServer.on('error', (error) => {
+            console.error(`Failed to start Python server process: ${error.message}`);
+            console.error('Make sure Python is installed and accessible in the system path of your deployment environment.');
+        });
+
+        // Clean up the child process if the Node server shuts down
+        process.on('exit', () => { if (pythonServer) pythonServer.kill(); });
+        process.on('SIGINT', () => { if (pythonServer) pythonServer.kill(); process.exit(); });
+        process.on('SIGTERM', () => { if (pythonServer) pythonServer.kill(); process.exit(); });
+    } else {
+        console.log(`Using external Python prediction server at: ${process.env.ML_SERVER_URL}`);
+    }
 });
