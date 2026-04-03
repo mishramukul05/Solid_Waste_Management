@@ -13,7 +13,9 @@ export default function WorkerDashboard() {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [visibleImages, setVisibleImages] = useState({});
   const [imageUrls, setImageUrls] = useState({});
+  const [resolvedImageUrls, setResolvedImageUrls] = useState({});
   const [loadingImages, setLoadingImages] = useState({});
+  const [activeTab, setActiveTab] = useState('Dispatched');
 
   const [verifyModalId, setVerifyModalId] = useState(null);
   const [uploadingVerify, setUploadingVerify] = useState(false);
@@ -27,13 +29,19 @@ export default function WorkerDashboard() {
       return;
     }
 
-    if (!imageUrls[id] && req.hasImage) {
+    if ((!imageUrls[id] && req.hasImage) || (!resolvedImageUrls[id] && req.hasResolvedImage)) {
       try {
         setLoadingImages(prev => ({ ...prev, [id]: true }));
         const token = localStorage.getItem('token');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const res = await axios.get(`/api/v1/requests/${id}`, config);
-        setImageUrls(prev => ({ ...prev, [id]: res.data.data.image }));
+        
+        if (res.data.data.image) {
+          setImageUrls(prev => ({ ...prev, [id]: res.data.data.image }));
+        }
+        if (res.data.data.resolvedImage) {
+          setResolvedImageUrls(prev => ({ ...prev, [id]: res.data.data.resolvedImage }));
+        }
       } catch (err) {
         console.error("Failed to load image");
       } finally {
@@ -63,9 +71,9 @@ export default function WorkerDashboard() {
         };
         
         const response = await axios.get('/api/v1/requests', config);
-        // Only keep dispatched requests
-        const dispatched = response.data.data.filter(r => r.status === 'Dispatched');
-        setRequests(dispatched);
+        // Keep dispatched and resolved requests
+        const workerRequests = response.data.data.filter(r => r.status === 'Dispatched' || r.status === 'Resolved');
+        setRequests(workerRequests);
       } catch (err) {
         setError('Failed to fetch requests.');
       } finally {
@@ -90,7 +98,7 @@ export default function WorkerDashboard() {
 
       await axios.put(`/api/v1/requests/${id}`, payload, config);
       
-      setRequests(requests.filter(req => req._id !== id));
+      setRequests(requests.map(req => req._id === id ? { ...req, status: newStatus, resolvedImage: resolvedImage || req.resolvedImage } : req));
       setSuccess('Waste marked as Resolved successfully!');
       setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
@@ -150,8 +158,9 @@ export default function WorkerDashboard() {
     setSelectedDistrict('');
   };
 
-  // Filter the already dispatched requests by state and district
+  // Filter the already dispatched requests by state and district and active tab
   const filteredRequests = requests.filter(req => {
+    if (req.status !== activeTab) return false;
     if (!req.location) return false;
     const parts = req.location.split(',').map(p => p.trim());
     const reqState = parts.length >= 3 ? parts[parts.length - 1] : '';
@@ -237,8 +246,21 @@ export default function WorkerDashboard() {
           
           <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 gap-6">
             <div>
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-800 mb-2">Assigned Tasks</h2>
-              <p className="text-gray-500 font-medium text-lg">Select your assigned region to view active waste clearance orders.</p>
+              <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-800 mb-2">Your Tasks</h2>
+              <div className="flex gap-4 mt-4">
+                <button 
+                  onClick={() => setActiveTab('Dispatched')}
+                  className={`px-6 py-2 rounded-xl font-bold transition-all ${activeTab === 'Dispatched' ? 'bg-orange-500 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  Assigned
+                </button>
+                <button 
+                  onClick={() => setActiveTab('Resolved')}
+                  className={`px-6 py-2 rounded-xl font-bold transition-all ${activeTab === 'Resolved' ? 'bg-emerald-500 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  Resolved
+                </button>
+              </div>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -316,21 +338,28 @@ export default function WorkerDashboard() {
                   <div key={req._id} className="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden hover:shadow-[0_20px_40px_rgba(249,115,22,0.12)] hover:-translate-y-2 transition-all duration-300 group flex flex-col">
                     {/* Image Area */}
                     <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden border-b border-gray-100 group-hover:opacity-95 p-4 flex flex-col justify-center">
-                      {!req.hasImage ? (
+                      {!req.hasImage && !req.hasResolvedImage ? (
                         <div className="w-full h-full bg-gray-100/50 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200">
                            <span className="text-gray-400 font-bold text-sm">No Image</span>
                         </div>
-                      ) : visibleImages[req._id] && imageUrls[req._id] ? (
-                        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm animate-fade-in group/img bg-gray-900">
-                          <img
-                            src={imageUrls[req._id]}
-                            alt={req.title}
-                            className="w-full h-full object-contain"
-                          />
+                      ) : visibleImages[req._id] ? (
+                        <div className="relative w-full h-full flex gap-2 rounded-2xl overflow-hidden shadow-sm animate-fade-in bg-gray-900 p-1">
+                          {imageUrls[req._id] && (
+                            <div className="flex-1 relative group/img bg-black/20 rounded-xl overflow-hidden">
+                              <img src={imageUrls[req._id]} alt="Before" className="w-full h-full object-contain" />
+                              <div className="absolute top-2 left-2 z-10 bg-red-500/90 text-white text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded backdrop-blur-sm shadow-sm pointer-events-none">Before</div>
+                            </div>
+                          )}
+                          {resolvedImageUrls[req._id] && (
+                            <div className="flex-1 relative group/img bg-black/20 rounded-xl overflow-hidden">
+                              <img src={resolvedImageUrls[req._id]} alt="After" className="w-full h-full object-contain" />
+                              <div className="absolute top-2 left-2 z-10 bg-green-500/90 text-white text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded backdrop-blur-sm shadow-sm pointer-events-none">After</div>
+                            </div>
+                          )}
                           <button
                             onClick={() => toggleImage(req)}
-                            className="absolute top-2 right-2 bg-red-500/90 text-white rounded-full p-2 hover:bg-red-600 backdrop-blur-sm shadow-sm transition-all"
-                            title="Hide Image"
+                            className="absolute top-3 right-3 bg-red-500/90 text-white rounded-full p-2 hover:bg-red-600 backdrop-blur-sm shadow-lg transition-all z-20"
+                            title="Hide Images"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                           </button>
@@ -388,8 +417,16 @@ export default function WorkerDashboard() {
                       </div>
                       
                       <div className="relative w-full">
-                        {verifiedCleanRequests[req._id] ? (
+                        {req.status === 'Resolved' ? (
+                          <div className="w-full bg-emerald-50 text-emerald-700 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 border border-emerald-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                            Task Completed
+                          </div>
+                        ) : verifiedCleanRequests[req._id] ? (
                           <div className="flex flex-col gap-4 w-full">
+
                             <div className="relative w-full h-48 rounded-xl overflow-hidden border-2 border-emerald-500 shadow-sm">
                               <img 
                                 src={verifiedCleanRequests[req._id]} 

@@ -41,6 +41,7 @@ export default function Dashboard() {
 
   const [expandedImages, setExpandedImages] = useState({});
   const [imageUrls, setImageUrls] = useState({});
+  const [resolvedImageUrls, setResolvedImageUrls] = useState({});
   const [loadingImages, setLoadingImages] = useState({});
 
   const toggleImage = async (req) => {
@@ -50,13 +51,19 @@ export default function Dashboard() {
       return;
     }
 
-    if (!imageUrls[requestId] && req.hasImage) {
+    if ((!imageUrls[requestId] && req.hasImage) || (!resolvedImageUrls[requestId] && req.hasResolvedImage)) {
       try {
         setLoadingImages(prev => ({ ...prev, [requestId]: true }));
         const token = localStorage.getItem('token');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const res = await axios.get(`/api/v1/requests/${requestId}`, config);
-        setImageUrls(prev => ({ ...prev, [requestId]: res.data.data.image }));
+        
+        if (res.data.data.image) {
+          setImageUrls(prev => ({ ...prev, [requestId]: res.data.data.image }));
+        }
+        if (res.data.data.resolvedImage) {
+          setResolvedImageUrls(prev => ({ ...prev, [requestId]: res.data.data.resolvedImage }));
+        }
       } catch (err) {
         console.error("Failed to load image");
       } finally {
@@ -454,14 +461,26 @@ export default function Dashboard() {
 
                     <p className="text-gray-600 mb-6 pl-3 font-medium leading-relaxed">{req.description}</p>
 
-                    {req.hasImage && (
+                    {(req.hasImage || req.hasResolvedImage) && (
                       <div className="mb-6 pl-3">
                         <button onClick={() => toggleImage(req)} className="flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold text-sm rounded-xl border border-gray-200 transition-all">
-                          <span>{expandedImages[req._id] ? '🖼️ Hide Photo' : '🖼️ View Photo'}</span>
+                          <span>{loadingImages[req._id] ? '⏳ Loading...' : expandedImages[req._id] ? '🖼️ Hide Photos' : '🖼️ View Photos'}</span>
                         </button>
-                        {expandedImages[req._id] && imageUrls[req._id] && (
-                          <div className="mt-4 rounded-2xl overflow-hidden bg-gray-100 relative group/img border border-gray-200">
-                            <img src={imageUrls[req._id]} alt="Issue" className="w-full h-auto max-h-[400px] object-cover" />
+                        
+                        {expandedImages[req._id] && (
+                          <div className="mt-4 flex flex-col sm:flex-row gap-4">
+                            {imageUrls[req._id] && (
+                              <div className="flex-1 rounded-2xl overflow-hidden bg-gray-100 relative group/img border border-gray-200">
+                                <div className="absolute top-2 left-2 z-10 bg-red-500/90 text-white text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded backdrop-blur-sm shadow-sm pointer-events-none">Before</div>
+                                <img src={imageUrls[req._id]} alt="Issue Before" className="w-full h-[250px] object-cover" />
+                              </div>
+                            )}
+                            {resolvedImageUrls[req._id] && (
+                              <div className="flex-1 rounded-2xl overflow-hidden bg-gray-100 relative group/img border border-gray-200">
+                                <div className="absolute top-2 left-2 z-10 bg-green-500/90 text-white text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded backdrop-blur-sm shadow-sm pointer-events-none">After</div>
+                                <img src={resolvedImageUrls[req._id]} alt="Issue Resolved" className="w-full h-[250px] object-cover" />
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
