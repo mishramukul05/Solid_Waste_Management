@@ -396,29 +396,34 @@ const toggleUserRole = async (userId, newRole) => {
       )}
 
       {/* Sleek Navigation Bar */}
-      <header className="bg-white/90 backdrop-blur-xl border-b border-indigo-100 shadow-[0_4px_30px_rgba(79,70,229,0.06)] px-8 py-4 flex justify-between items-center sticky top-0 z-50 transition-all text-gray-800">
-        <div className="flex items-center gap-4">
-          <div className="bg-gradient-to-br from-indigo-500 to-indigo-700 w-12 h-12 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shadow-indigo-200/50 transform hover:scale-105 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-800 to-indigo-500 tracking-tight">Admin Portal</h1>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">EcoManage System</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-6">
-          <div className="hidden sm:block text-right">
-             <p className="text-sm text-gray-500 font-medium">Welcome,</p>
-             <div className="flex items-center gap-2">
-                 <p className="text-base font-bold text-gray-800">{userName}</p>
-                 <span className="px-2 py-0.5 text-[10px] rounded-md font-bold bg-indigo-50 border border-indigo-200 text-indigo-700 uppercase tracking-wider">
-                   Admin
-                 </span>
-             </div>
+      <header className="bg-white/90 backdrop-blur-xl border-b border-indigo-100 shadow-[0_4px_30px_rgba(79,70,229,0.06)] sticky top-0 z-[100] transition-all text-gray-800">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="bg-gradient-to-br from-indigo-500 to-indigo-700 w-12 h-12 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shadow-indigo-200/50 transform hover:scale-105 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-800 to-indigo-500 tracking-tight">Admin Portal</h1>
+              <p className="text-sm font-bold text-gray-400 capitalize flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                EcoManage System
+              </p>
+            </div>
           </div>
           
-          {/* Notifications Dropdown */}
-          <div className="relative" ref={notificationRef}>
+          <div className="flex items-center gap-6">
+            <div className="hidden sm:block text-right">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium text-gray-500">Welcome,</p>
+                <p className="text-base font-bold text-gray-800 capitalize">{userName}</p>
+                <span className="px-2 py-0.5 text-[10px] rounded-md font-bold bg-indigo-50 border border-indigo-200 text-indigo-700 uppercase tracking-wider">
+                  Admin
+                </span>
+              </div>
+            </div>
+            
+            {/* Notifications Dropdown */}
+            <div className="relative" ref={notificationRef}>
             <button 
               onClick={handleOpenNotifications}
               className="relative p-2.5 text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl shadow-sm transition-all"
@@ -492,6 +497,7 @@ const toggleUserRole = async (userId, newRole) => {
             <span className="hidden sm:inline">Logout</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
           </button>
+          </div>
         </div>
       </header>
 

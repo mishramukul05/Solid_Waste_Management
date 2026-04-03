@@ -194,32 +194,37 @@ export default function WorkerDashboard() {
       )}
 
       {/* Sleek Navigation Bar */}
-      <header className="bg-white/90 backdrop-blur-xl border-b border-orange-100 shadow-[0_4px_30px_rgba(249,115,22,0.06)] px-8 py-4 flex justify-between items-center sticky top-0 z-50 transition-all text-gray-800">
-        <div className="flex items-center gap-4">
-          <div className="bg-gradient-to-br from-orange-400 to-orange-600 w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-orange-200/50 transform hover:scale-105 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-700 to-orange-500 tracking-tight">Worker Portal</h1>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">EcoManage System</p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-6">
-          <div className="hidden sm:block text-right">
-             <p className="text-sm text-gray-500 font-medium">Welcome,</p>
-             <div className="flex items-center gap-2">
-                 <p className="text-base font-bold text-gray-800">{userName}</p>
-                 <span className="px-2 py-0.5 text-[10px] rounded-md font-bold bg-orange-50 border border-orange-200 text-orange-700 uppercase tracking-wider">
-                   Field Staff
-                 </span>
-             </div>
+      <header className="bg-white/90 backdrop-blur-xl border-b border-orange-100 shadow-[0_4px_30px_rgba(249,115,22,0.06)] sticky top-0 z-[100] transition-all text-gray-800">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="bg-gradient-to-br from-orange-400 to-orange-600 w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-orange-200/50 transform hover:scale-105 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-700 to-orange-500 tracking-tight">Worker Portal</h1>
+              <p className="text-sm font-bold text-gray-400 capitalize flex items-center gap-1.5">
+                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                 EcoManage System
+              </p>
+            </div>
           </div>
           
-          <button onClick={handleLogout} className="bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-5 py-2.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-sm border border-transparent hover:border-red-200 group">
-            <span className="hidden sm:inline">Logout</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-          </button>
+          <div className="flex items-center gap-6">
+            <div className="hidden sm:block text-right">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium text-gray-500">Welcome,</p>
+                <p className="text-base font-bold text-gray-800 capitalize">{userName}</p>
+                <span className="px-2 py-0.5 text-[10px] rounded-md font-bold bg-orange-50 border border-orange-200 text-orange-700 uppercase tracking-wider">
+                  Field Staff
+                </span>
+              </div>
+            </div>
+            
+            <button onClick={handleLogout} className="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-sm border border-red-100 hover:border-transparent flex items-center gap-2 group">
+              <span className="hidden sm:inline">Logout</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            </button>
+          </div>
         </div>
       </header>
       

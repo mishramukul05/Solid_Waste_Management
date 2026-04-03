@@ -18,22 +18,22 @@ function App() {
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-eco-100 rounded-full mix-blend-multiply filter blur-2xl opacity-70 animate-blob animation-delay-4000 pointer-events-none z-0"></div>
 
         {/* Global Navigation */}
-        <nav className="relative z-50 bg-white/80 backdrop-blur-xl sticky top-0 border-b border-green-100 shadow-[0_8px_30px_-12px_rgba(34,197,94,0.15)] transition-all py-3.5">
+        <nav className="relative z-50 bg-gradient-to-r from-emerald-950 via-green-900 to-teal-950 text-white sticky top-0 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.5)] border-b border-emerald-800/50 transition-all py-3">
           <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <Link to="/" className="flex items-center gap-3 cursor-pointer transition-transform hover:scale-105 active:scale-95 group">
-              <div className="bg-gradient-to-br from-green-500 to-emerald-600 w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-green-200/60 text-2xl group-hover:-rotate-12 transition-all duration-300">
+            <Link to="/" className="flex items-center gap-3 cursor-pointer transition-transform hover:opacity-90 active:scale-95 group">
+              <div className="bg-gradient-to-br from-emerald-400 to-green-500 w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-500/20 text-xl group-hover:rotate-12 transition-all duration-300">
                 ♻️
               </div>
-              <span className="text-2xl mt-0.5 font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-green-800 via-green-600 to-emerald-500 drop-shadow-sm">
+              <span className="text-2xl font-black tracking-tight text-white drop-shadow-sm">
                 EcoManage
               </span>
             </Link>
-            <div className="hidden sm:flex items-center gap-2.5 bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 px-5 py-2 rounded-2xl border border-green-200/60 shadow-sm">
-              <span className="flex h-2.5 w-2.5 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+            <div className="hidden sm:flex items-center gap-3 bg-emerald-950/40 backdrop-blur-sm px-5 py-2 rounded-xl border border-emerald-700/50 shadow-inner">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
               </span>
-              <span className="text-sm font-extrabold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-emerald-600">
+              <span className="text-xs font-black uppercase tracking-[0.15em] text-emerald-50">
                 Solid Waste Management System
               </span>
             </div>

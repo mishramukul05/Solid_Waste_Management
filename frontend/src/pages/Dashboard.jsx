@@ -234,19 +234,34 @@ export default function Dashboard() {
         </div>
       )}
 
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <header className="bg-white/90 backdrop-blur-xl border-b border-emerald-100 shadow-[0_4px_30px_rgba(16,185,129,0.06)] sticky top-0 z-[100] transition-all text-gray-800">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-tr from-green-500 to-emerald-400 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">👋</div>
+            <div className="bg-gradient-to-br from-emerald-500 to-green-600 w-12 h-12 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shadow-emerald-200/50 transform hover:scale-105 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+            </div>
             <div>
-              <h1 className="text-2xl font-black text-gray-900">Citizen Portal</h1>
-              <p className="text-gray-500 text-sm font-medium">Welcome back, <span className="font-bold text-gray-800">{userName}</span></p>
+              <h1 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-green-500 tracking-tight">Citizen Portal</h1>
+              <p className="text-sm font-bold text-gray-400 capitalize flex items-center gap-1.5">
+                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                 EcoManage System
+              </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+            <div className="hidden sm:block text-right">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium text-gray-500">Welcome,</p>
+                <p className="text-base font-bold text-gray-800 capitalize">{userName}</p>
+                <span className="px-2 py-0.5 text-[10px] rounded-md font-bold bg-emerald-50 border border-emerald-200 text-emerald-700 uppercase tracking-wider">
+                  Citizen
+                </span>
+              </div>
+            </div>
+
             <div className="relative" ref={notificationRef}>
-              <button onClick={handleOpenNotifications} className="relative p-2.5 text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-xl transition-all">
+              <button onClick={handleOpenNotifications} className="relative p-2.5 text-gray-600 hover:bg-green-50 hover:text-green-700 rounded-xl transition-all border border-transparent hover:border-green-100">
                 🔔
                 {unreadCount > 0 && (
                   <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
@@ -284,8 +299,9 @@ export default function Dashboard() {
               )}
             </div>
 
-            <button onClick={handleLogout} className="items-center px-4 py-2 bg-red-50 hover:bg-red-500 text-red-600 hover:text-white font-bold rounded-xl transition-all shadow-sm">
-              Logout
+            <button onClick={handleLogout} className="flex items-center gap-2 px-5 py-2.5 bg-red-50 hover:bg-red-500 text-red-600 hover:text-white font-bold rounded-xl transition-all shadow-sm border border-red-100 hover:border-transparent group">
+              <span className="hidden sm:inline">Logout</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
             </button>
           </div>
         </div>
