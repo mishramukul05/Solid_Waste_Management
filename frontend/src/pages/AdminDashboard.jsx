@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api.js';
 import { indiaData } from '../utils/indiaData';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
         setLoadingImages(prev => ({ ...prev, [requestId]: true }));
         const token = localStorage.getItem('token');
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const res = await axios.get(`http://localhost:5000/api/v1/requests/${requestId}`, config);
+        const res = await axios.get(`/api/v1/requests/${requestId}`, config);
         
         if (res.data.data.image) {
           setImageUrls(prev => ({ ...prev, [requestId]: res.data.data.image }));
@@ -152,10 +152,10 @@ export default function AdminDashboard() {
           headers: { Authorization: `Bearer ${token}` }
         };
         
-        const response = await axios.get('http://localhost:5000/api/v1/requests', config);
+        const response = await axios.get('/api/v1/requests', config);
         setRequests(response.data.data);
           
-          const userResponse = await axios.get('http://localhost:5000/api/v1/users', config);
+          const userResponse = await axios.get('/api/v1/users', config);
           setUsers(userResponse.data.data);
       } catch (err) {
         setError('Failed to fetch requests. Please log in again.');
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` }
       };
 
-      await axios.put(`http://localhost:5000/api/v1/requests/${id}`, { status: newStatus }, config);
+      await axios.put(`/api/v1/requests/${id}`, { status: newStatus }, config);
       
       // Update the local state to match the new status
       setRequests(requests.map(req => req._id === id ? { ...req, status: newStatus } : req));
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` }
       };
 
-      await axios.delete(`http://localhost:5000/api/v1/requests/${id}`, config);
+      await axios.delete(`/api/v1/requests/${id}`, config);
       
       // Remove the deleted request from the local state
       setRequests(requests.filter(req => req._id !== id));
@@ -221,7 +221,7 @@ const toggleUserRole = async (userId, newRole) => {
       };
       
       const response = await axios.put(
-        `http://localhost:5000/api/v1/users/${userId}/role`,
+        `/api/v1/users/${userId}/role`,
         { role: newRole },
         config
       );

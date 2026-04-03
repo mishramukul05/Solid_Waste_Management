@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api.js';
 import { indiaData } from '../utils/indiaData';
 
 export default function WorkerDashboard() {
@@ -32,7 +32,7 @@ export default function WorkerDashboard() {
         setLoadingImages(prev => ({ ...prev, [id]: true }));
         const token = localStorage.getItem('token');
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const res = await axios.get(`http://localhost:5000/api/v1/requests/${id}`, config);
+        const res = await axios.get(`/api/v1/requests/${id}`, config);
         setImageUrls(prev => ({ ...prev, [id]: res.data.data.image }));
       } catch (err) {
         console.error("Failed to load image");
@@ -62,7 +62,7 @@ export default function WorkerDashboard() {
           headers: { Authorization: `Bearer ${token}` }
         };
         
-        const response = await axios.get('http://localhost:5000/api/v1/requests', config);
+        const response = await axios.get('/api/v1/requests', config);
         // Only keep dispatched requests
         const dispatched = response.data.data.filter(r => r.status === 'Dispatched');
         setRequests(dispatched);
@@ -88,7 +88,7 @@ export default function WorkerDashboard() {
         payload.resolvedImage = resolvedImage;
       }
 
-      await axios.put(`http://localhost:5000/api/v1/requests/${id}`, payload, config);
+      await axios.put(`/api/v1/requests/${id}`, payload, config);
       
       setRequests(requests.filter(req => req._id !== id));
       setSuccess('Waste marked as Resolved successfully!');
@@ -118,7 +118,7 @@ export default function WorkerDashboard() {
         const token = localStorage.getItem('token');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         
-        const response = await axios.post('http://localhost:5000/api/v1/requests/verify-clean', { image: base64Image }, config);
+        const response = await axios.post('/api/v1/requests/verify-clean', { image: base64Image }, config);
         
         if (response.data.prediction === 'Clean') {
           // If clean, mark it as verified clean so the worker can submit

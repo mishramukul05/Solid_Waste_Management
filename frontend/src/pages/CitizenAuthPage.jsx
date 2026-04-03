@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api.js';
 
 export default function CitizenAuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -33,8 +33,8 @@ export default function CitizenAuthPage() {
 
     try {
       const endpoint = isLogin
-        ? 'http://localhost:5000/api/v1/auth/login'
-        : 'http://localhost:5000/api/v1/auth/register';
+        ? '/api/v1/auth/login'
+        : '/api/v1/auth/register';
 
       const payload = isLogin
         ? { email: formData.email, password: formData.password }

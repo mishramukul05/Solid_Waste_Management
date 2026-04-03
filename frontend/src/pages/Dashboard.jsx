@@ -1,7 +1,7 @@
 ﻿import { indiaData } from '../utils/indiaData';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api.js';
 
 const formatDate = (dateString) => {
   if (!dateString) return '—';
@@ -55,7 +55,7 @@ export default function Dashboard() {
         setLoadingImages(prev => ({ ...prev, [requestId]: true }));
         const token = localStorage.getItem('token');
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const res = await axios.get(`http://localhost:5000/api/v1/requests/${requestId}`, config);
+        const res = await axios.get(`/api/v1/requests/${requestId}`, config);
         setImageUrls(prev => ({ ...prev, [requestId]: res.data.data.image }));
       } catch (err) {
         console.error("Failed to load image");
@@ -82,7 +82,7 @@ export default function Dashboard() {
       if (!token) { navigate('/'); return; }
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const response = await axios.get('http://localhost:5000/api/v1/requests', config);
+        const response = await axios.get('/api/v1/requests', config);
         setRequests(response.data.data);
       } catch (err) {
         setError('Failed to fetch requests. Please log in again.');
@@ -129,7 +129,7 @@ export default function Dashboard() {
         location: fullLocation, image: formData.image
       };
 
-      const response = await axios.post('http://localhost:5000/api/v1/requests', payload, config);
+      const response = await axios.post('/api/v1/requests', payload, config);
       const newRequest = response.data.data;
       newRequest.hasImage = !!newRequest.image;
       if (newRequest.image) setImageUrls(prev => ({ ...prev, [newRequest._id]: newRequest.image }));
@@ -158,7 +158,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.delete(`http://localhost:5000/api/v1/requests/${id}`, config);
+      await axios.delete(`/api/v1/requests/${id}`, config);
       setRequests(requests.filter(req => req._id !== id));
       setSuccess('Request deleted successfully!');
       setTimeout(() => setSuccess(''), 3000);
