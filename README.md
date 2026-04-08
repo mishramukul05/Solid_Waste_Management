@@ -1,3 +1,6 @@
+Live Deployed Link:https://solid-waste-management-frontend.onrender.com/
+
+
 # Waste Management System - Backend Developer (Intern) Assignment
 
 This project is a full-stack web application designed as a submission for the Backend Developer (Intern) role. It implements a scalable REST API along with a functional React frontend for users to interact with.
