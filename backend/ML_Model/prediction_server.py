@@ -28,17 +28,23 @@ transform = transforms.Compose([
 ])
 
 class PredictionHandler(BaseHTTPRequestHandler):
-    # Suppress default logging to stdout
+    # Keep default logging to stdout for Render
     def log_message(self, format, *args):
-        pass
+        print("%s - - [%s] %s" % (
+            self.address_string(),
+            self.log_date_time_string(),
+            format % args
+        ), flush=True)
 
     def do_POST(self):
+        print(f"Received POST request to {self.path}", flush=True)
         if self.path == '/predict':
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
             
             try:
                 data = json.loads(post_data)
+                print(f"data received: {data.keys()}", flush=True)
                 img_path = data.get('image_path')
                 img_base64 = data.get('image_base64')
                 
@@ -64,6 +70,7 @@ class PredictionHandler(BaseHTTPRequestHandler):
                     _, pred = torch.max(output, 1)
 
                 result = classes[pred.item()]
+                print(f"Prediction result: {result}", flush=True)
                 
                 # Send the response
                 self.send_response(200)
@@ -72,6 +79,9 @@ class PredictionHandler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({'prediction': result}).encode('utf-8'))
                 
             except Exception as e:
+                print(f"Error during prediction: {e}", flush=True)
+                import traceback
+                traceback.print_exc()
                 self.send_response(500)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
