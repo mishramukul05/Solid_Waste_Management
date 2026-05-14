@@ -3,6 +3,26 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
+const callPredictionServer = async (mlServerUrl, base64Data) => {
+    const maxAttempts = 3;
+    const timeoutMs = 15000;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        try {
+            const response = await axios.post(`${mlServerUrl}/predict`, {
+                image_base64: base64Data
+            }, {
+                timeout: timeoutMs
+            });
+            return response;
+        } catch (error) {
+            if (attempt === maxAttempts) {
+                throw error;
+            }
+        }
+    }
+};
+
 // @desc    Create a new waste request
 // @route   POST /api/v1/requests
 // @access  Private (Citizen or Manager)
@@ -24,9 +44,7 @@ const createRequest = async (req, res) => {
             try {
                 // Call our local Python prediction server
                 const mlServerUrl = process.env.ML_SERVER_URL || 'http://127.0.0.1:5001';
-                const response = await axios.post(`${mlServerUrl}/predict`, {
-                    image_base64: base64Data
-                });
+                const response = await callPredictionServer(mlServerUrl, base64Data);
                 
                 const finalOutput = response.data.prediction;
 
@@ -101,9 +119,7 @@ const verifyCleanImage = async (req, res) => {
 
         try {
             const mlServerUrl = process.env.ML_SERVER_URL || 'http://127.0.0.1:5001';
-            const response = await axios.post(`${mlServerUrl}/predict`, {
-                image_base64: base64Data
-            });
+            const response = await callPredictionServer(mlServerUrl, base64Data);
             const finalOutput = response.data.prediction;
 
             if (fs.existsSync(tempImagePath)) {
