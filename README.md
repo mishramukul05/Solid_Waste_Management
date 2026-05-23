@@ -1,10 +1,5 @@
 # EcoManage
 
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
-[![React](https://img.shields.io/badge/Frontend-React%2019-61DAFB?logo=react&logoColor=white)](https://react.dev/)
-[![Node.js](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-
 > A role-based solid waste management platform with image screening, request tracking, and field-worker verification.
 
 ## Overview
@@ -34,15 +29,6 @@ The app solves a common municipal workflow problem: taking waste complaints from
 - Production frontend: https://solid-waste-management-frontend.onrender.com/
 - Staging: None documented
 - Demo credentials: Not included in the repository
-
-## Screenshots / Preview
-
-No screenshots are included in the repository.
-
-Available public asset paths:
-
-- [frontend/public/favicon.svg](frontend/public/favicon.svg)
-- [frontend/public/icons.svg](frontend/public/icons.svg)
 
 ## Tech Stack
 
