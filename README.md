@@ -32,12 +32,12 @@ The app solves a common municipal workflow problem: taking waste complaints from
 ## Live Demo
 
 - Production frontend: https://solid-waste-management-frontend.onrender.com/
-- Staging: not found in the repository
-- Demo credentials: not documented in the repository
+- Staging: None documented
+- Demo credentials: Not included in the repository
 
 ## Screenshots / Preview
 
-No screenshot images were committed in the repository.
+No screenshots are included in the repository.
 
 Available public asset paths:
 
@@ -49,7 +49,7 @@ Available public asset paths:
 | Layer | Technologies |
 | --- | --- |
 | Frontend | React 19, Vite, React Router DOM, Axios, Recharts |
-| Backend | Node.js, Express 5, Mongoose |
+| Backend | Node.js, Express, Mongoose |
 | Database | MongoDB |
 | Authentication | JSON Web Tokens, bcryptjs |
 | Validation | express-validator |
